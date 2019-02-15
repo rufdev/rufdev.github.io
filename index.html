@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CMSC 207 Calculator</title>
+    <style>
+        .container>div {
+            display: grid;
+            justify-content: end;
+            align-items: center;
+            font-size: 2em;
+            color: #ffeead;
+            padding: 5px;
+        }
+
+        html,
+        body {
+            background-color: #ffeead;
+            margin: 10px;
+        }
+
+        .operator {
+            background-color: #6eca9c;
+            font-size: 2em;
+            color: #ffeead;
+        }
+
+        .func {
+            background-color: #ff6f69;
+            font-size: 2em;
+            color: #ffeead;
+        }
+
+        .num {
+            background-color: #ffcc5c;
+            font-size: 2em;
+            color: #ffeead;
+        }
+
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(9, 50px);
+            grid-gap: 3px;
+        }
+
+        .display {
+            grid-column: 1/-1;
+            background-color: #9a96ce;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="history" class="display"></div>
+        <div id="output" class="display"></div>
+        <!-- <button class="operator" data-operator="percent">%</button>
+        <button class="operator" data-operator="root">√</button>
+        <button class="operator" data-operator="square">x²</button>
+        <button class="operator" data-operator="fraction">1/x</button> -->
+        <button class="func" onclick="clearexpression()">CE</button>
+        <button class="func" onclick="clearall()">C</button>
+        <button class="func" onclick="backspace()">⌫</button>
+        <button class="operator" data-operator="div">÷</button>
+        <button class="num" data-number="7">7</button>
+        <button class="num" data-number="8">8</button>
+        <button class="num" data-number="9">9</button>
+        <button class="operator" data-operator="mul">×</button>
+        <button class="num" data-number="4">4</button>
+        <button class="num" data-number="5">5</button>
+        <button class="num" data-number="6">6</button>
+        <button class="operator" data-operator="sub">-</button>
+        <button class="num" data-number="1">1</button>
+        <button class="num" data-number="2">2</button>
+        <button class="num" data-number="3">3</button>
+        <button class="operator" data-operator="add">+</button>
+        <button class="func" onclick="toggleposneg()">±</button>
+        <button class="num" data-number="0">0</button>
+        <button class="func" onclick="addDecimal()">.</button>
+        <button class="func" onclick="equals()">=</button>
+    </div>
+
+    <script>
+        window.addEventListener("load", function () {
+            clearall();
+            addnumevent();
+            addoperatorevent();
+            console.log(eval('Math.sqrt(2)'));
+        });
+
+        window.addEventListener("keyup",function(event){
+            let key = event.which || event.keyCode;
+            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) { 
+                if (key >=96 && key <=105){
+                    key -= 48
+                }
+
+                switch(key){
+                    case 106:
+                        // multiply
+                        setOp("mul");
+                        break;
+                    case 107:
+                        // add
+                        setOp("add");
+                        break;
+                    case 109:
+                        // subtract
+                        setOp("sub");
+                        break;
+                    case 110:
+                        // decimal point 
+                        addDecimal();
+                        break;
+                    case 111:
+                        // divide
+                        setOp("div");
+                        break;
+                    default:
+                        setNum(String.fromCharCode(key));
+                        break;
+                }
+                // console.log(String.fromCharCode(key));
+            } else if (key == 13){
+                equals();
+            } else if (key == 8){
+                backspace();
+            } else if (key == 27){
+                clear();
+            }
+            console.log(key);
+            
+        });
+
+        let el = function (element) {
+            if (element.charAt(0) === "#") {
+                return document.querySelector(element);
+            }
+            return document.querySelectorAll(element);
+        };
+
+        let history = el("#history");
+        let output = el("#output");
+        let operators = el(".operator");
+        let numbers = el(".num");
+        let currentnumber;
+        let expression;
+
+
+        let setNum = function (element) {
+            
+            if (output.innerHTML == "0") currentnumber = "";
+            if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
+            if (element instanceof  Object) currentnumber += element.getAttribute("data-number");
+            else currentnumber +=  element
+            output.innerHTML = currentnumber;
+        };
+
+        let setOp = function (element) {
+            
+            if (expression.length > 0) {
+                expression += currentnumber;
+                if(!evalutateexpression()) return;
+                expression = `(${expression})`;
+               
+            
+            }
+            
+            if (element instanceof  Object) parseExpression(element.getAttribute("data-operator"));
+            else parseExpression(element);
+            currentnumber = "";
+            
+         
+            
+        };
+
+        function addnumevent() {
+            for (i = 0; i < numbers.length; i++) {
+                numbers[i].addEventListener("click", function () {
+                    setNum(this)
+                });
+            }
+        }
+
+        function addoperatorevent() {
+            for (i = 0; i < operators.length; i++) {
+                operators[i].addEventListener("click", function () {
+                    setOp(this);
+                });
+            }
+        }
+
+        function parseExpression(operator) {
+            if (expression.length == 0 && currentnumber.length == 0){
+                expression = output.innerHTML;
+            }else if (expression.length == 0){
+                expression = currentnumber;
+            }
+
+            switch (operator) {
+                case "add":
+                    expression += '+';
+                    break;
+
+                case "sub":
+                    expression += '-';
+                    break;
+
+                case "mul":
+                    expression += '×';
+                    break;
+
+                case "div":
+                    expression += '÷';
+                    break;
+                case "percent":
+                    expression += '+';
+                    break;
+
+                case "root":
+                    expression = `Math.sqrt(${expression})`;
+                    break;
+
+                case "square":
+                    expression += '×';
+                    break;
+
+                case "fraction":
+                    expression += '÷';
+                    break;
+            }
+            history.innerHTML = expression.replace(/[()]/g, '').replace("*", "×").replace("/", "÷");
+        }
+
+
+        function equals() {
+            if (expression.length > 0){
+                expression += currentnumber;
+            } 
+            history.innerHTML = "";
+            evalutateexpression()
+            currentnumber = "";
+            expression = "";
+        }
+        function evalutateexpression() {
+            expression = expression.replace("×", "*");
+            expression = expression.replace("÷", "/");
+            console.log(expression);
+            try{
+                let answer = eval(expression);
+                if (answer || answer == 0) output.innerHTML = answer;
+                console.log(`${expression} = ${answer}`);
+                return true
+            }catch(e){
+                console.log(e);
+            }
+            return false;
+           
+
+        }
+        function clearexpression() {
+            output.innerHTML = "0";
+            currentnumber = "";
+        }
+        function clearall() {
+            output.innerHTML = "0";
+            history.innerHTML = "";
+            currentnumber = "";
+            expression = "";
+           
+        }
+        function backspace() {
+            currentnumber = output.innerHTML
+            currentnumber = currentnumber.slice(0, -1);
+            if (currentnumber.length == 0) {
+                clearall();
+                return;
+            }
+            output.innerHTML = currentnumber;
+        }
+
+        function addDecimal() {
+            currentnumber = output.innerHTML
+            if (!currentnumber.includes('.')) currentnumber += '.';
+        }
+
+        function toggleposneg() {
+            currentnumber = output.innerHTML
+         
+            if (!currentnumber.includes('-') && currentnumber !== "0"){
+                currentnumber = `-${currentnumber}`;
+            }else{
+                currentnumber = currentnumber.replace("-", "");
+               
+            }
+            output.innerHTML = currentnumber
+        }
+
+    </script>
+</body>
+
+</html>
