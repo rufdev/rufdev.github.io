@@ -4,53 +4,75 @@
 <head>
     <title>CMSC 207 Calculator</title>
     <style>
-        .container>div {
-            display: grid;
-            justify-content: end;
-            align-items: center;
-            font-size: 2em;
-            color: #ffeead;
-            padding: 5px;
-         
-        }
-
         html,
         body {
+            font-size: 62.5%;
+            box-sizing: border-box;
             background-color: #ffeead;
         }
 
-        .operator {
-            background-color: #6eca9c;
-            font-size: 2em;
-            color: #ffeead;
-        }
-
-        .func {
-            background-color: #ff6f69;
-            font-size: 2em;
-            color: #ffeead;
-        }
-
-        .num {
-            background-color: #ffcc5c;
-            font-size: 2em;
-            color: #ffeead;
-        }
-
-
         .container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+        }
+
+        .container > div {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            /* grid-template-columns: 10% 275px 1fr 10%; */
-            grid-template-rows: repeat(7, 4em);
-            grid-gap: 3px;
-            /* max-width: 720px; */
-            
+            justify-content: end;
+            align-items: center;
+            font-size: 5rem;
+            color: #ffeead;
+            padding: 5px;
+            height: 60px;
         }
 
         .display {
             grid-column: 1/-1;
             background-color: #9a96ce;
+        }
+        button {
+            height: 60px;
+            background-color: #fff;
+            border-radius: 3px;
+            border: 1px solid #c4c4c4;
+            background-color: #ffcc5c;
+            font-size: 2rem;
+            color: #ffeead;
+            background-image: linear-gradient(to bottom, transparent, transparent 50%, rgba(0, 0, 0, .04));
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), inset 0 1px 0 0 rgba(255, 255, 255, .45), inset 0 -1px 0 0 rgba(255, 255, 255, .15), 0 1px 0 0 rgba(255, 255, 255, .15);
+            text-shadow: 0 1px rgba(255, 255, 255, .4);
+        }
+
+        button:hover {
+            background-color: #eaeaea;
+        }
+
+        .operator {
+            background-color: #6eca9c;
+            font-size: 2rem;
+            color: #ffeead;
+        }
+
+        .func {
+            background-color: #f0595f;
+            border-color: #b0353a;
+            color: #fff;
+        }
+
+        .func:hover {
+            background-color: #f17377;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
         }
     </style>
 </head>
@@ -59,30 +81,30 @@
     <div class="container">
         <div id="history" class="display"></div>
         <div id="output" class="display"></div>
-        <!-- <button class="operator" data-operator="percent">%</button>
-        <button class="operator" data-operator="root">√</button>
-        <button class="operator" data-operator="square">x²</button>
-        <button class="operator" data-operator="fraction">1/x</button> -->
-        <button class="func" onclick="clearexpression()">CE</button>
-        <button class="func" onclick="clearall()">C</button>
-        <button class="func" onclick="backspace()">⌫</button>
-        <button class="operator" data-operator="div">÷</button>
-        <button class="num" data-number="7">7</button>
-        <button class="num" data-number="8">8</button>
-        <button class="num" data-number="9">9</button>
-        <button class="operator" data-operator="mul">×</button>
-        <button class="num" data-number="4">4</button>
-        <button class="num" data-number="5">5</button>
-        <button class="num" data-number="6">6</button>
-        <button class="operator" data-operator="sub">-</button>
-        <button class="num" data-number="1">1</button>
-        <button class="num" data-number="2">2</button>
-        <button class="num" data-number="3">3</button>
-        <button class="operator" data-operator="add">+</button>
-        <button class="func" onclick="toggleposneg()">±</button>
-        <button class="num" data-number="0">0</button>
-        <button class="func" onclick="addDecimal()">.</button>
-        <button class="func" onclick="equals()">=</button>
+        <!-- <button type="button" class="operator" data-operator="percent">%</button>
+        <button type="button" class="operator" data-operator="root">√</button>
+        <button type="button" class="operator" data-operator="square">x²</button>
+        <button type="button" class="operator" data-operator="fraction">1/x</button> -->
+        <button type="button" class="func" onclick="clearexpression()">CE</button>
+        <button type="button" class="func" onclick="clearall()">C</button>
+        <button type="button" class="func" onclick="backspace()">⌫</button>
+        <button type="button" class="operator" data-operator="div">&divide;</button>
+        <button type="button" class="num" data-number="7">7</button>
+        <button type="button" class="num" data-number="8">8</button>
+        <button type="button" class="num" data-number="9">9</button>
+        <button type="button" class="operator" data-operator="mul">&times;</button>
+        <button type="button" class="num" data-number="4">4</button>
+        <button type="button" class="num" data-number="5">5</button>
+        <button type="button" class="num" data-number="6">6</button>
+        <button type="button" class="operator" data-operator="sub">-</button>
+        <button type="button" class="num" data-number="1">1</button>
+        <button type="button" class="num" data-number="2">2</button>
+        <button type="button" class="num" data-number="3">3</button>
+        <button type="button" class="operator" data-operator="add">+</button>
+        <button type="button" class="func" onclick="toggleposneg()">±</button>
+        <button type="button" class="num" data-number="0">0</button>
+        <button type="button" class="func" onclick="addDecimal()">.</button>
+        <button type="button" class="func" onclick="equals()">=</button>
     </div>
 
     <script>
@@ -93,14 +115,14 @@
             console.log(eval('Math.sqrt(2)'));
         });
 
-        window.addEventListener("keyup",function(event){
+        window.addEventListener("keyup", function (event) {
             let key = event.which || event.keyCode;
-            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) { 
-                if (key >=96 && key <=105){
+            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) {
+                if (key >= 96 && key <= 105) {
                     key -= 48
                 }
 
-                switch(key){
+                switch (key) {
                     case 106:
                         // multiply
                         setOp("mul");
@@ -126,15 +148,15 @@
                         break;
                 }
                 // console.log(String.fromCharCode(key));
-            } else if (key == 13){
+            } else if (key == 13) {
                 equals();
-            } else if (key == 8){
+            } else if (key == 8) {
                 backspace();
-            } else if (key == 27){
+            } else if (key == 27) {
                 clear();
             }
             console.log(key);
-            
+
         });
 
         let el = function (element) {
@@ -153,30 +175,30 @@
 
 
         let setNum = function (element) {
-            
+
             if (output.innerHTML == "0") currentnumber = "";
             if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
-            if (element instanceof  Object) currentnumber += element.getAttribute("data-number");
-            else currentnumber +=  element
+            if (element instanceof Object) currentnumber += element.getAttribute("data-number");
+            else currentnumber += element
             output.innerHTML = currentnumber;
         };
 
         let setOp = function (element) {
-            
+
             if (expression.length > 0) {
                 expression += currentnumber;
-                if(!evalutateexpression()) return;
+                if (!evalutateexpression()) return;
                 expression = `(${expression})`;
-               
-            
+
+
             }
-            
-            if (element instanceof  Object) parseExpression(element.getAttribute("data-operator"));
+
+            if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
             else parseExpression(element);
             currentnumber = "";
-            
-         
-            
+
+
+
         };
 
         function addnumevent() {
@@ -196,9 +218,9 @@
         }
 
         function parseExpression(operator) {
-            if (expression.length == 0 && currentnumber.length == 0){
+            if (expression.length == 0 && currentnumber.length == 0) {
                 expression = output.innerHTML;
-            }else if (expression.length == 0){
+            } else if (expression.length == 0) {
                 expression = currentnumber;
             }
 
@@ -239,9 +261,9 @@
 
 
         function equals() {
-            if (expression.length > 0){
+            if (expression.length > 0) {
                 expression += currentnumber;
-            } 
+            }
             history.innerHTML = "";
             evalutateexpression()
             currentnumber = "";
@@ -251,16 +273,16 @@
             expression = expression.replace("×", "*");
             expression = expression.replace("÷", "/");
             console.log(expression);
-            try{
+            try {
                 let answer = eval(expression);
                 if (answer || answer == 0) output.innerHTML = answer;
                 console.log(`${expression} = ${answer}`);
                 return true
-            }catch(e){
+            } catch (e) {
                 console.log(e);
             }
             return false;
-           
+
 
         }
         function clearexpression() {
@@ -272,7 +294,7 @@
             history.innerHTML = "";
             currentnumber = "";
             expression = "";
-           
+
         }
         function backspace() {
             currentnumber = output.innerHTML
@@ -291,12 +313,12 @@
 
         function toggleposneg() {
             currentnumber = output.innerHTML
-         
-            if (!currentnumber.includes('-') && currentnumber !== "0"){
+
+            if (!currentnumber.includes('-') && currentnumber !== "0") {
                 currentnumber = `-${currentnumber}`;
-            }else{
+            } else {
                 currentnumber = currentnumber.replace("-", "");
-               
+
             }
             output.innerHTML = currentnumber
         }
