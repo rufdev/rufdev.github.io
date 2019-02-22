@@ -310,7 +310,7 @@
                 // let matches = expression.match(/\(([^)]+)\)/g);
                 let secondnumber = expression.substring(expression.indexOf("%")+1);
                 if (!isNaN(secondnumber)){
-                    expression = expression.replace('%'+ secondnumber, "/"+ secondnumber +'*100');
+                    expression = expression.replace('%'+ secondnumber, "/100*"+ secondnumber);
                 }
                
             }
