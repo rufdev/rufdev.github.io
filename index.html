@@ -27,7 +27,7 @@
             display: grid;
             justify-content: end;
             align-items: center;
-            font-size: 5rem;
+            font-size: 3rem;
             color: #ffeead;
             padding: 5px;
             height: 60px;
@@ -83,10 +83,14 @@
     <div class="container">
         <div id="history" class="display"></div>
         <div id="output" class="display"></div>
-        <!-- <button type="button" class="operator" data-operator="percent">%</button>
+        <button type="button" class="operator" data-operator="sin">sin</button>
+        <button type="button" class="operator" data-operator="cos">cos</button>
+        <button type="button" class="operator" data-operator="tan">tan</button>
+        <button type="button" class="operator" data-operator="log">log</button>
+        <button type="button" class="operator" data-operator="percent">%</button>
         <button type="button" class="operator" data-operator="root">√</button>
         <button type="button" class="operator" data-operator="square">x²</button>
-        <button type="button" class="operator" data-operator="fraction">1/x</button> -->
+        <button type="button" class="operator" data-operator="fraction">1/x</button>
         <button type="button" class="func" onclick="clearexpression()">CE</button>
         <button type="button" class="func" onclick="clearall()">C</button>
         <button type="button" class="func" onclick="backspace()">⌫</button>
@@ -114,7 +118,7 @@
             clearall();
             addnumevent();
             addoperatorevent();
-            console.log(eval('Math.sqrt(2)'));
+            console.log(eval('Math.pow(2,2)'));
         });
 
         window.addEventListener("keyup", function (event) {
@@ -155,7 +159,7 @@
             } else if (key == 8) {
                 backspace();
             } else if (key == 27) {
-                clear();
+                clearall();
             }
             console.log(key);
 
@@ -182,6 +186,8 @@
             if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
             if (element instanceof Object) currentnumber += element.getAttribute("data-number");
             else currentnumber += element
+
+            console.log(expression);
             output.innerHTML = currentnumber;
         };
 
@@ -243,22 +249,44 @@
                     expression += '÷';
                     break;
                 case "percent":
-                    expression += '+';
+                    expression += '%';
                     break;
-
                 case "root":
                     expression = `Math.sqrt(${expression})`;
                     break;
 
                 case "square":
-                    expression += '×';
+                    expression = `Math.pow(${expression},2)`;
                     break;
 
                 case "fraction":
-                    expression += '÷';
+                    expression = `1/${expression}`;
                     break;
+                case "sin":
+                    expression = `Math.sin(${expression})`;
+                    break;
+                case "cos":
+                    expression = `Math.cos(${expression})`;
+                    break;
+
+                case "tan":
+                    expression = `Math.tan(${expression})`;
+                    break;
+
+                case "log":
+                    expression = `Math.log(${expression})`;
+                    break;    
             }
-            history.innerHTML = expression.replace(/[()]/g, '').replace("*", "×").replace("/", "÷");
+
+            let displayexpression = expression.replace("*", "×").replace("/", "÷");
+            if (expression.includes('Math.sqrt')) displayexpression = displayexpression.replace('Math.sqrt','sqrt');
+            if (expression.includes('Math.pow')) displayexpression = displayexpression.replace('Math.pow','sqr');
+            if (expression.includes('Math.sin')) displayexpression = displayexpression.replace('Math.sin','sin');
+            if (expression.includes('Math.cos')) displayexpression = displayexpression.replace('Math.cos','cos');
+            if (expression.includes('Math.tan')) displayexpression = displayexpression.replace('Math.tan','tan');
+            if (expression.includes('Math.log')) displayexpression = displayexpression.replace('Math.log','log');
+            // else displayexpression = displayexpression.replace(/[()]/g, '')
+            history.innerHTML = displayexpression
         }
 
 
@@ -272,9 +300,23 @@
             expression = "";
         }
         function evalutateexpression() {
+            console.log('test');
+            console.log(expression);
             expression = expression.replace("×", "*");
             expression = expression.replace("÷", "/");
-            console.log(expression);
+            if(expression.endsWith('%')){
+                expression = expression.replace("%", "/100");
+            }else if (expression.includes('%')){
+                // let matches = expression.match(/\(([^)]+)\)/g);
+                let secondnumber = expression.substring(expression.indexOf("%")+1);
+                if (!isNaN(secondnumber)){
+                    expression = expression.replace('%'+ secondnumber, "/"+ secondnumber +'*100');
+                }
+               
+            }
+
+
+
             try {
                 let answer = eval(expression);
                 if (answer || answer == 0) output.innerHTML = answer;
