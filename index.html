@@ -118,7 +118,7 @@
             clearall();
             addnumevent();
             addoperatorevent();
-            console.log(eval('Math.pow(2,2)'));
+            console.log(!isNaN('(3)'));
         });
 
         window.addEventListener("keyup", function (event) {
@@ -161,7 +161,7 @@
             } else if (key == 27) {
                 clearall();
             }
-            console.log(key);
+            // console.log(key);
 
         });
 
@@ -178,6 +178,7 @@
         let numbers = el(".num");
         let currentnumber;
         let expression;
+        let currentoperator;
 
 
         let setNum = function (element) {
@@ -187,17 +188,20 @@
             if (element instanceof Object) currentnumber += element.getAttribute("data-number");
             else currentnumber += element
 
-            console.log(expression);
+            // console.log(expression);
             output.innerHTML = currentnumber;
         };
 
         let setOp = function (element) {
-
+            
             if (expression.length > 0) {
+                console.log(expression);
+                console.log(currentnumber);
                 expression += currentnumber;
+                
                 if (!evalutateexpression()) return;
-                expression = `(${expression})`;
-
+                if (isNaN(expression)) expression = `(${expression})`;
+                
 
             }
 
@@ -226,12 +230,13 @@
         }
 
         function parseExpression(operator) {
+            currentoperator = operator;
             if (expression.length == 0 && currentnumber.length == 0) {
                 expression = output.innerHTML;
             } else if (expression.length == 0) {
                 expression = currentnumber;
-            }
-
+            } 
+            
             switch (operator) {
                 case "add":
                     expression += '+';
@@ -291,17 +296,20 @@
 
 
         function equals() {
+            
             if (expression.length > 0) {
+                expression += currentnumber;
+            }else{
+                // expression = output.innerHTML;
+                parseExpression(currentoperator);
                 expression += currentnumber;
             }
             history.innerHTML = "";
-            evalutateexpression()
-            currentnumber = "";
-            expression = "";
+            evalutateexpression();
+            // currentnumber = "";
+            // expression = "";
         }
         function evalutateexpression() {
-            console.log('test');
-            console.log(expression);
             expression = expression.replace("×", "*");
             expression = expression.replace("÷", "/");
             if(expression.endsWith('%')){
@@ -318,9 +326,14 @@
 
 
             try {
+                console.log(expression);
                 let answer = eval(expression);
-                if (answer || answer == 0) output.innerHTML = answer;
-                console.log(`${expression} = ${answer}`);
+                if (answer || answer == 0){
+                    output.innerHTML = answer;
+                    expression = answer;
+                } 
+                
+                console.log(`= ${answer}`);
                 return true
             } catch (e) {
                 console.log(e);
