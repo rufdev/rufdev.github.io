@@ -43,10 +43,6 @@
             border: 1px solid #c4c4c4;
             background-color: #ffcc5c;
             color: #ffeead;
-           
-            /* background-image: linear-gradient(to bottom, transparent, transparent 50%, rgba(0, 0, 0, .04));
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), inset 0 1px 0 0 rgba(255, 255, 255, .45), inset 0 -1px 0 0 rgba(255, 255, 255, .15), 0 1px 0 0 rgba(255, 255, 255, .15);
-            text-shadow: 0 1px rgba(255, 255, 255, .4); */
         }
 
         button:hover {
@@ -167,19 +163,21 @@
 
     <script>
         window.addEventListener("load", function () {
-            clearall();
-            addnumevent();
-            addoperatorevent();
-            console.log(!isNaN('(3)'));
+            //initialize calculator
+            clearall(); //clear all fields and variables
+            addnumevent(); //add event listener to numeric buttons
+            addoperatorevent(); //add event listener to operators
+            console.log('calculator initialized');
+            console.log(isNaN('1+'));
         });
 
+        //add event listener for keyboard input
         window.addEventListener("keyup", function (event) {
             let key = event.which || event.keyCode;
             if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) {
                 if (key >= 96 && key <= 105) {
                     key -= 48
                 }
-
                 switch (key) {
                     case 106:
                         // multiply
@@ -205,64 +203,24 @@
                         setNum(String.fromCharCode(key));
                         break;
                 }
-                // console.log(String.fromCharCode(key));
             } else if (key == 13) {
+                //enter key will call the equals function
                 equals();
             } else if (key == 8) {
+                //backspace will erase character from the right
                 backspace();
             } else if (key == 27) {
+                //escape button will clear all input and variables
                 clearall();
             }
-            // console.log(key);
-
         });
 
+        //el variable will hold all elements from html
         let el = function (element) {
             if (element.charAt(0) === "#") {
                 return document.querySelector(element);
             }
             return document.querySelectorAll(element);
-        };
-
-        let history = el("#history");
-        let output = el("#output");
-        let operators = el(".operator");
-        let numbers = el(".num");
-        let currentnumber;
-        let expression;
-        let currentoperator;
-
-
-        let setNum = function (element) {
-
-            if (output.innerHTML == "0") currentnumber = "";
-            if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
-            if (element instanceof Object) currentnumber += element.getAttribute("data-number");
-            else currentnumber += element
-
-            // console.log(expression);
-            output.innerHTML = currentnumber;
-        };
-
-        let setOp = function (element) {
-            
-            if (expression.length > 0) {
-                console.log(expression);
-                console.log(currentnumber);
-                expression += currentnumber;
-                
-                if (!evalutateexpression()) return;
-                if (isNaN(expression)) expression = `(${expression})`;
-                
-
-            }
-
-            if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
-            else parseExpression(element);
-            currentnumber = "";
-
-
-
         };
 
         function addnumevent() {
@@ -281,14 +239,103 @@
             }
         }
 
-        function parseExpression(operator) {
-            currentoperator = operator;
-            if (expression.length == 0 && currentnumber.length == 0) {
-                expression = output.innerHTML;
-            } else if (expression.length == 0) {
-                expression = currentnumber;
-            } 
+        let history = el("#history"); //history div - display the expression created by the user
+        let output = el("#output"); //output div - display the current input number or result of the evaluated expression
+        let operators = el(".operator"); //returns all the buttons with class=operator
+        let numbers = el(".num"); //returns all the buttons with the class=num
+        let currentnumber; 
+        let expression;
+        let currentoperator;
+        let prevnumber;
+       
+        let secondexpression;
+
+
+        let setNum = function (element) {
+            console.log(expression);
+           //if new number initialize currentnumber 
+           if (currentnumber.length == 0) currentnumber = ""; 
+
+            //concatinates currentnumber based on user input
+            if (element instanceof Object) currentnumber += element.getAttribute("data-number");
+            else currentnumber += element;
+
+            //display number on output box
+            output.innerHTML = currentnumber;
+    
+            // if (output.innerHTML == "0") currentnumber = "";
+            // if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
+            // if (element instanceof Object) currentnumber += element.getAttribute("data-number");
+            // else currentnumber += element
+
+            // // console.log(expression);
+            // output.innerHTML = currentnumber;
+        };
+
+        let setOp = function (element) {
+            console.log(expression);
+            //if currentnumber is not blank concatinate currentnumber to expression
+            // if(expression.length == 0 && currentnumber.length > 0){
+            //     expression += currentnumber;
+            //     currentnumber = "";
+            // }else{
+                
+            //     expression += output.innerHTML;
+            //     currentnumber = "";
+            // }
+            //put number to stack
             
+
+            
+            
+
+            // if (isNaN(expression)){
+            //     evalutateexpression();
+            // }
+
+            if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
+            else parseExpression(element);
+            console.log(expression);
+            
+            
+
+            // if (expression.length > 0) {
+            //     console.log(expression);
+            //     console.log(currentnumber);
+            //     expression += currentnumber;
+                
+            //     if (!evalutateexpression()) return;
+            //     if (isNaN(expression)) expression = `(${expression})`;
+                
+
+            // }
+
+            // if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
+            // else parseExpression(element);
+            // currentnumber = "";
+
+
+
+        };
+
+        function parseExpression(operator) {
+            
+            // if (expression.length == 0 && currentnumber.length == 0) {
+            //     expression = output.innerHTML;
+            // } else if (expression.length == 0) {
+            //     expression = currentnumber;
+            // } 
+            if (['add','sub','mul','div'].includes(operator)){
+                if(expression.length == 0){
+                    expression += output.innerHTML;
+                } 
+                else {
+                    if(isNaN(expression)) equals();
+                }
+            }
+            
+            
+
             switch (operator) {
                 case "add":
                     expression += '+';
@@ -299,99 +346,94 @@
                     break;
 
                 case "mul":
-                    expression += '×';
+                    expression += '*';
                     break;
 
                 case "div":
-                    expression += '÷';
+                    expression += '/';
                     break;
                 case "percent":
-                    expression += '%';
+                    expression += `${currentnumber}%`;
+                    evalutateexpression();
                     break;
                 case "root":
-                    expression = `Math.sqrt(${expression})`;
+                    expression += `Math.sqrt(${currentnumber})`;
+                    evalutateexpression();
                     break;
-
                 case "square":
-                    expression = `Math.pow(${expression},2)`;
+                    expression += `Math.pow(${currentnumber},2)`;
+                    evalutateexpression();
                     break;
-
                 case "fraction":
-                    expression = `1/${expression}`;
+                    expression += `(1/${currentnumber})`;
+                    evalutateexpression();
                     break;
                 case "sin":
-                    expression = `Math.sin(${expression})`;
+                    expression += `Math.sin(${currentnumber})`;
+                    evalutateexpression();
                     break;
                 case "cos":
-                    expression = `Math.cos(${expression})`;
+                    expression += `Math.cos(${currentnumber})`;
+                    evalutateexpression();
                     break;
-
                 case "tan":
-                    expression = `Math.tan(${expression})`;
+                    expression += `Math.tan(${currentnumber})`;
+                    evalutateexpression();
                     break;
-
                 case "log":
-                    expression = `Math.log(${expression})`;
+                    expression += `Math.log(${currentnumber})`;
+                    evalutateexpression();
                     break;    
             }
-
-            let displayexpression = expression.replace("*", "×").replace("/", "÷");
-            if (expression.includes('Math.sqrt')) displayexpression = displayexpression.replace('Math.sqrt','sqrt');
-            if (expression.includes('Math.pow')) displayexpression = displayexpression.replace('Math.pow','sqr');
-            if (expression.includes('Math.sin')) displayexpression = displayexpression.replace('Math.sin','sin');
-            if (expression.includes('Math.cos')) displayexpression = displayexpression.replace('Math.cos','cos');
-            if (expression.includes('Math.tan')) displayexpression = displayexpression.replace('Math.tan','tan');
-            if (expression.includes('Math.log')) displayexpression = displayexpression.replace('Math.log','log');
+            currentoperator = operator;
+            currentnumber = "";
+            // let displayexpression = expression.replace("*", "×").replace("/", "÷");
+            // if (expression.includes('Math.sqrt')) displayexpression = displayexpression.replace('Math.sqrt','sqrt');
+            // if (expression.includes('Math.pow')) displayexpression = displayexpression.replace('Math.pow','sqr');
+            // if (expression.includes('Math.sin')) displayexpression = displayexpression.replace('Math.sin','sin');
+            // if (expression.includes('Math.cos')) displayexpression = displayexpression.replace('Math.cos','cos');
+            // if (expression.includes('Math.tan')) displayexpression = displayexpression.replace('Math.tan','tan');
+            // if (expression.includes('Math.log')) displayexpression = displayexpression.replace('Math.log','log');
             // else displayexpression = displayexpression.replace(/[()]/g, '')
-            history.innerHTML = displayexpression
+            // history.innerHTML = displayexpression;
         }
 
 
         function equals() {
-            
+            console.log(expression);
             if (expression.length > 0) {
-                expression += currentnumber;
+                expression += output.innerHTML;
+                prevnumber = output.innerHTML;
             }else{
+                expression = output.innerHTML;
                 parseExpression(currentoperator);
-                expression += currentnumber;
+                expression += prevnumber;
             }
-            history.innerHTML = "";
-            evalutateexpression();
             
+            evalutateexpression();
         }
         function evalutateexpression() {
             expression = expression.replace("×", "*");
             expression = expression.replace("÷", "/");
             if(expression.endsWith('%')){
                 expression = expression.replace("%", "/100");
-            }else if (expression.includes('%')){
-                // let matches = expression.match(/\(([^)]+)\)/g);
-                let secondnumber = expression.substring(expression.indexOf("%")+1);
-                if (!isNaN(secondnumber)){
-                    expression = expression.replace('%'+ secondnumber, "/100*"+ secondnumber);
-                }
-               
             }
 
-
-
             try {
-                console.log(expression);
                 let answer = eval(expression);
                 if (answer || answer == 0){
                     output.innerHTML = answer;
-                    expression = answer;
                 } 
-                
+                history.innerHTML = "";
+                currentnumber = "";
+                expression = answer;
                 console.log(`= ${answer}`);
-                return true
             } catch (e) {
-                console.log(e);
+                console.log('expression not complete.');
             }
-            return false;
-
 
         }
+
         function clearexpression() {
             output.innerHTML = "0";
             currentnumber = "";
@@ -416,6 +458,7 @@
         function addDecimal() {
             currentnumber = output.innerHTML
             if (!currentnumber.includes('.')) currentnumber += '.';
+            output.innerHTML = currentnumber;
         }
 
         function toggleposneg() {
