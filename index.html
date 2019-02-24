@@ -129,7 +129,7 @@
 
 <body>
     <div class="container">
-        <div id="history" class="display"></div>
+        <!-- <div id="history" class="display"></div> -->
         <div id="output" class="display"></div>
         <button type="button" class="operator" data-operator="sin">sin</button>
         <button type="button" class="operator" data-operator="cos">cos</button>
@@ -239,7 +239,7 @@
             }
         }
 
-        let history = el("#history"); //history div - display the expression created by the user
+        // let history = el("#history"); //history div - display the expression created by the user
         let output = el("#output"); //output div - display the current input number or result of the evaluated expression
         let operators = el(".operator"); //returns all the buttons with class=operator
         let numbers = el(".num"); //returns all the buttons with the class=num
@@ -424,7 +424,6 @@
                 if (answer || answer == 0){
                     output.innerHTML = answer;
                 } 
-                history.innerHTML = "";
                 currentnumber = "";
                 expression = answer;
                 console.log(`= ${answer}`);
@@ -440,7 +439,6 @@
         }
         function clearall() {
             output.innerHTML = "0";
-            history.innerHTML = "";
             currentnumber = "";
             expression = "";
 
