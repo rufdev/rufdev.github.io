@@ -168,7 +168,7 @@
             addnumevent(); //add event listener to numeric buttons
             addoperatorevent(); //add event listener to operators
             console.log('calculator initialized');
-            console.log(isNaN('1+'));
+            console.log(isNaN('3'));
         });
 
         //add event listener for keyboard input
@@ -273,7 +273,7 @@
         };
 
         let setOp = function (element) {
-            console.log(expression);
+          
             //if currentnumber is not blank concatinate currentnumber to expression
             // if(expression.length == 0 && currentnumber.length > 0){
             //     expression += currentnumber;
@@ -295,7 +295,7 @@
 
             if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
             else parseExpression(element);
-            console.log(expression);
+           
             
             
 
@@ -319,18 +319,21 @@
         };
 
         function parseExpression(operator) {
-            
+            console.log(expression);
             // if (expression.length == 0 && currentnumber.length == 0) {
             //     expression = output.innerHTML;
             // } else if (expression.length == 0) {
             //     expression = currentnumber;
             // } 
+           
+
             if (['add','sub','mul','div'].includes(operator)){
                 if(expression.length == 0){
                     expression += output.innerHTML;
                 } 
                 else {
                     if(isNaN(expression)) equals();
+                    else expression = output.innerHTML;
                 }
             }
             
