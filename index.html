@@ -10,33 +10,42 @@
             box-sizing: border-box;
             background-color: #ffeead;
         }
-       
+      
         .container {
-            border: 1px solid #ccc;
+            border: 1px solid #ccc;   /* style the container and add border to the calculator */
             border-radius: 5px;
             position: absolute;
-            top: 50%;
+            top: 50%;   /* position the calculator on the center of the screen */
             left: 50%;
             transform: translate(-50%, -50%);
-            width:80%;
-            max-width:400px;
+            width:80%; /* expands the width of the calculator to 80% */
+            max-width:400px; /* limits the maximum with of the calculator */
             
         }
 
+        /* define the grid layout of the calculator using CSS grid */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* define for columns */
+            grid-gap: 10px;
+            padding: 10px;
+        }
+
+        /* style for the output box of the calculator */
         .container > div {
             display: grid;
             justify-content: end;
             align-items: center;
             color: #ffeead;
             padding: 5px;
-            
-            
         }
-
+        
         .display {
-            grid-column: 1/-1;
+            grid-column: 1/-1; /* dynamically expand the width of the output box depending on the number of grid columns */
             background-color: #9a96ce;
         }
+
+        /* style for the button elements */
         button {
             background-color: #fff;
             border-radius: 3px;
@@ -45,32 +54,30 @@
             color: #ffeead;
         }
 
+        /* change the color of the button on hover */
         button:hover {
             background-color: #f02020;
         }
 
+        /* style for the operator buttons */
         .operator {
             background-color: #6eca9c;
             color: #ffeead;
         }
 
+        /* style for the function buttons */
         .func {
             background-color: #f0595f;
             border-color: #b0353a;
             color: #fff;
         }
 
-        .func:hover {
+        /* change button color on hover */
+        .operator:hover .func:hover {
             background-color: #f17377;
         }
 
-        .container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-            padding: 10px;
-        }
-
+        /* adjusting height and font-size for devices on portrait mode */
         @media screen and (orientation:portrait) {
             .container >div{
                 height: 3rem;
@@ -84,6 +91,7 @@
             
         }
 
+        /* adjusting height and font-size for devices up to 320px width resolution */
         @media  (max-width:320px) and (orientation:portrait) {
             .container >div{
                 height: 2rem;
@@ -96,6 +104,8 @@
             }
             
         }
+
+        /* adjusting height and font-size for devices with a minimum 568px width resolution */
         @media (min-width:568px) and (orientation:landscape) {
             .container >div{
                 height: 1rem;
@@ -103,6 +113,8 @@
             }
             
         }
+
+        /* adjusting height and font-size for devices with a minimum 731px width resolution */
         @media (min-width:731px) and (orientation:landscape) {
             .container >div{
                 height: 2rem;
@@ -111,6 +123,8 @@
            
             
         }
+
+        /* adjusting height and font-size for devices with a minimum 1024px width resolution */
         @media (min-width:1024px) and (orientation:landscape) {
             .container >div{
                 height: 3rem;
@@ -129,7 +143,6 @@
 
 <body>
     <div class="container">
-        <!-- <div id="history" class="display"></div> -->
         <div id="output" class="display"></div>
         <button type="button" class="operator" data-operator="sin">sin</button>
         <button type="button" class="operator" data-operator="cos">cos</button>
@@ -167,40 +180,38 @@
             clearall(); //clear all fields and variables
             addnumevent(); //add event listener to numeric buttons
             addoperatorevent(); //add event listener to operators
-            console.log('calculator initialized');
-            console.log(isNaN('3'));
         });
 
         //add event listener for keyboard input
         window.addEventListener("keyup", function (event) {
-            let key = event.which || event.keyCode;
-            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) {
-                if (key >= 96 && key <= 105) {
+            let key = event.which || event.keyCode; //gets the unicode value of the pressed keyboard key and assign it to the variable key
+            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 111)) { // fillters the unicode allowing only valid keyboard keys to be used (numeric, operatoion keys, backspace, enter/return key and esc key)
+                if (key >= 96 && key <= 105) { //convert numpad keys to number keys
                     key -= 48
                 }
                 switch (key) {
                     case 106:
                         // multiply
-                        setOp("mul");
+                        setOp("mul"); //set operation to multiplication
                         break;
                     case 107:
                         // add
-                        setOp("add");
+                        setOp("add"); // set operation to addition
                         break;
                     case 109:
                         // subtract
-                        setOp("sub");
+                        setOp("sub"); //set operation to subtruction
                         break;
                     case 110:
                         // decimal point 
-                        addDecimal();
+                        addDecimal(); //add decimal place to the current input
                         break;
                     case 111:
                         // divide
-                        setOp("div");
+                        setOp("div"); //set operation to division
                         break;
                     default:
-                        setNum(String.fromCharCode(key));
+                        setNum(String.fromCharCode(key));//get the number equivalent of the unicode and set the number as string
                         break;
                 }
             } else if (key == 13) {
@@ -215,15 +226,15 @@
             }
         });
 
-        //el variable will hold all elements from html
+        //el variable will hold the elements from the document
         let el = function (element) {
             if (element.charAt(0) === "#") {
-                return document.querySelector(element);
+                return document.querySelector(element); //return the first element based on the id
             }
-            return document.querySelectorAll(element);
+            return document.querySelectorAll(element); //return all the elements from the document
         };
 
-        function addnumevent() {
+        function addnumevent() { //add event listener on click to all the number buttons
             for (i = 0; i < numbers.length; i++) {
                 numbers[i].addEventListener("click", function () {
                     setNum(this)
@@ -231,7 +242,7 @@
             }
         }
 
-        function addoperatorevent() {
+        function addoperatorevent() { //add event listener on click to all the operator buttons
             for (i = 0; i < operators.length; i++) {
                 operators[i].addEventListener("click", function () {
                     setOp(this);
@@ -239,214 +250,148 @@
             }
         }
 
-        // let history = el("#history"); //history div - display the expression created by the user
         let output = el("#output"); //output div - display the current input number or result of the evaluated expression
         let operators = el(".operator"); //returns all the buttons with class=operator
         let numbers = el(".num"); //returns all the buttons with the class=num
-        let currentnumber; 
-        let expression;
-        let currentoperator;
-        let prevnumber;
-       
-        let secondexpression;
+        let currentnumber; //holds the value of the current input
+        let expression; //holds the value of the current expression
+        let currentoperator; //holds the value of the current operation
+        let prevnumber; //holds the value of the previous number.
 
 
         let setNum = function (element) {
-            console.log(expression);
-           //if new number initialize currentnumber 
+           //initialize new number
            if (currentnumber.length == 0) currentnumber = ""; 
 
-            //concatinates currentnumber based on user input
-            if (element instanceof Object) currentnumber += element.getAttribute("data-number");
+            //forms a number with more than one digit
+            if (element instanceof Object) currentnumber += element.getAttribute("data-number"); //evaluate if the element is a keyboard entry or a button event
             else currentnumber += element;
 
             //display number on output box
             output.innerHTML = currentnumber;
-    
-            // if (output.innerHTML == "0") currentnumber = "";
-            // if (expression.length == 0 && currentnumber.length == 0) currentnumber = "";
-            // if (element instanceof Object) currentnumber += element.getAttribute("data-number");
-            // else currentnumber += element
-
-            // // console.log(expression);
-            // output.innerHTML = currentnumber;
         };
 
         let setOp = function (element) {
-          
-            //if currentnumber is not blank concatinate currentnumber to expression
-            // if(expression.length == 0 && currentnumber.length > 0){
-            //     expression += currentnumber;
-            //     currentnumber = "";
-            // }else{
-                
-            //     expression += output.innerHTML;
-            //     currentnumber = "";
-            // }
-            //put number to stack
-            
-
-            
-            
-
-            // if (isNaN(expression)){
-            //     evalutateexpression();
-            // }
-
-            if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
+            //parse the expression and the operator to form an equation
+            if (element instanceof Object) parseExpression(element.getAttribute("data-operator")); //evaluates if the element is a keyboard entry or a button event
             else parseExpression(element);
-           
-            
-            
-
-            // if (expression.length > 0) {
-            //     console.log(expression);
-            //     console.log(currentnumber);
-            //     expression += currentnumber;
-                
-            //     if (!evalutateexpression()) return;
-            //     if (isNaN(expression)) expression = `(${expression})`;
-                
-
-            // }
-
-            // if (element instanceof Object) parseExpression(element.getAttribute("data-operator"));
-            // else parseExpression(element);
-            // currentnumber = "";
-
-
-
         };
 
         function parseExpression(operator) {
-            console.log(expression);
-            // if (expression.length == 0 && currentnumber.length == 0) {
-            //     expression = output.innerHTML;
-            // } else if (expression.length == 0) {
-            //     expression = currentnumber;
-            // } 
-           
 
-            if (['add','sub','mul','div'].includes(operator)){
+            if (['add','sub','mul','div'].includes(operator)){ //filter arithmetic operations
                 if(expression.length == 0){
-                    expression += output.innerHTML;
+                    expression += output.innerHTML; //if the expression is blank, then set the current input as the expression
                 } 
                 else {
-                    if(isNaN(expression)) equals();
-                    else expression = output.innerHTML;
+                    if(isNaN(expression)) equals(); //if the current expression is a valid equation, then evaluate the equation
+                    else {
+                        expression = output.innerHTML //if it is not a valid equation then this means that the expression contains a number, this will reset the expression to the value of the current input
+                        //example: after evaluating 1 + 2 the result is 3 which is the current expression. if the user choose to enter a new equation the previous result will be disregarded and a new input is set to the value of the new expression.
+                    };
                 }
+            }else{
+                if(!isNaN(expression)) expression = ""; //if the operator is not an arithmetic opertation, set the expression to blank
             }
             
             
 
             switch (operator) {
                 case "add":
-                    expression += '+';
+                    expression += '+'; //concatinate an operator + to the current expression
                     break;
 
                 case "sub":
-                    expression += '-';
+                    expression += '-'; //concatinate an operator - to the current expression
                     break;
 
                 case "mul":
-                    expression += '*';
+                    expression += '*'; //concatinate an operator * to the current expression
                     break;
 
                 case "div":
-                    expression += '/';
+                    expression += '/'; //concatinate an operator / to the current expression
                     break;
                 case "percent":
-                    expression += `${currentnumber}%`;
-                    evalutateexpression();
+                    expression += `${output.innerHTML}%`; //concatinate the current number with %
+                    evalutateexpression(); //immediately eavaluate the equation
                     break;
                 case "root":
-                    expression += `Math.sqrt(${currentnumber})`;
-                    evalutateexpression();
+                    expression += `Math.sqrt(${output.innerHTML})`; //concatinate the expression with the square root of a number
+                    evalutateexpression(); //immediately eavaluate the equation
                     break;
                 case "square":
-                    expression += `Math.pow(${currentnumber},2)`;
-                    evalutateexpression();
+                    expression += `Math.pow(${output.innerHTML},2)`; //concatinate the expression with the square of a number
+                    evalutateexpression(); //immediately eavaluate the equation
                     break;
                 case "fraction":
-                    expression += `(1/${currentnumber})`;
-                    evalutateexpression();
+                    expression += `(1/${output.innerHTML})`; //concatinate the expression with the multiplicative inverse of a number
+                    evalutateexpression(); //immediately eavaluate the equation to get the multiplicative inverse of a number
                     break;
                 case "sin":
-                    expression += `Math.sin(${currentnumber})`;
-                    evalutateexpression();
+                    expression += `Math.sin(${output.innerHTML})`; //concatinate the expression with the result of the sine notation of a number. e.g. sin(x).
+                    evalutateexpression(); //immediately evaluate the equation
                     break;
                 case "cos":
-                    expression += `Math.cos(${currentnumber})`;
-                    evalutateexpression();
+                    expression += `Math.cos(${output.innerHTML})`; //concatinate the expression with the result of the cosine notation of a number. e.g. cos(x).
+                    evalutateexpression(); //immediately evaluate the equation
                     break;
                 case "tan":
-                    expression += `Math.tan(${currentnumber})`;
-                    evalutateexpression();
+                    expression += `Math.tan(${output.innerHTML})`; //concatinate the expression with the result of the tangent notation of a number. e.g. tan(x).
+                    evalutateexpression(); //immediately evaluate the equation
                     break;
                 case "log":
-                    expression += `Math.log(${currentnumber})`;
-                    evalutateexpression();
+                    expression += `Math.log10(${output.innerHTML})`; //concatinate the expression with the result of the logarithm notation of a number. e.g. log10(x).
+                    evalutateexpression();  //immediately evaluate the equation
                     break;    
             }
-            currentoperator = operator;
-            currentnumber = "";
-            // let displayexpression = expression.replace("*", "×").replace("/", "÷");
-            // if (expression.includes('Math.sqrt')) displayexpression = displayexpression.replace('Math.sqrt','sqrt');
-            // if (expression.includes('Math.pow')) displayexpression = displayexpression.replace('Math.pow','sqr');
-            // if (expression.includes('Math.sin')) displayexpression = displayexpression.replace('Math.sin','sin');
-            // if (expression.includes('Math.cos')) displayexpression = displayexpression.replace('Math.cos','cos');
-            // if (expression.includes('Math.tan')) displayexpression = displayexpression.replace('Math.tan','tan');
-            // if (expression.includes('Math.log')) displayexpression = displayexpression.replace('Math.log','log');
-            // else displayexpression = displayexpression.replace(/[()]/g, '')
-            // history.innerHTML = displayexpression;
+            currentoperator = operator; //set current operator for later use
+            currentnumber = ""; //reset currentnumber to blank
+          
         }
 
 
-        function equals() {
-            console.log(expression);
-            if (expression.length > 0) {
-                expression += output.innerHTML;
-                prevnumber = output.innerHTML;
+        function equals() { //function to evaluate the equation
+            if (expression.length > 0) { //check if the equation is not blank
+                expression += output.innerHTML; //append the input to the equation
+                prevnumber = output.innerHTML; //set previous number for later use
             }else{
-                expression = output.innerHTML;
-                parseExpression(currentoperator);
+                expression = output.innerHTML; //this will trigger repetitive calculation. using the current result/output and the current operator and the previous number
+                parseExpression(currentoperator); //example: 1 + 2  = 3 after pressing the equal sign again the equation would be 3 + 2 using the current result and the pervious number
                 expression += prevnumber;
             }
             
-            evalutateexpression();
+            evalutateexpression(); //after validating/completing the equation it is then sent for evaluation
         }
         function evalutateexpression() {
-            expression = expression.replace("×", "*");
-            expression = expression.replace("÷", "/");
-            if(expression.endsWith('%')){
-                expression = expression.replace("%", "/100");
+            if(expression.endsWith('%')){ //if the equation ends with % replace
+                expression = expression.replace("%", "/100"); //replace % with /100 to get the percentage of a number
             }
 
             try {
-                let answer = eval(expression);
-                if (answer || answer == 0){
-                    output.innerHTML = answer;
+                let answer = eval(expression); //use eval module to evaluate the equation
+                if (answer || answer == 0){ 
+                    output.innerHTML = answer; //display answer on the output box
                 } 
-                currentnumber = "";
-                expression = answer;
-                console.log(`= ${answer}`);
+                currentnumber = ""; //reset the current number to blank
+                expression = answer; //set the next current expression with the result of the previous equation
             } catch (e) {
-                console.log('expression not complete.');
+                console.log('expression not complete.'); //do nothing if the equation fails to evaluate
             }
 
         }
 
-        function clearexpression() {
+        function clearexpression() { //function to clear the current expression/number
             output.innerHTML = "0";
             currentnumber = "";
         }
-        function clearall() {
+        function clearall() {//clear all expression and variables
             output.innerHTML = "0";
             currentnumber = "";
             expression = "";
 
         }
-        function backspace() {
+        function backspace() { //delete one digit from the right
             currentnumber = output.innerHTML
             currentnumber = currentnumber.slice(0, -1);
             if (currentnumber.length == 0) {
@@ -456,13 +401,13 @@
             output.innerHTML = currentnumber;
         }
 
-        function addDecimal() {
+        function addDecimal() {//adds decimal place to a number input
             currentnumber = output.innerHTML
             if (!currentnumber.includes('.')) currentnumber += '.';
             output.innerHTML = currentnumber;
         }
 
-        function toggleposneg() {
+        function toggleposneg() {//change the number between positive to negative
             currentnumber = output.innerHTML
 
             if (!currentnumber.includes('-') && currentnumber !== "0") {
